@@ -10,6 +10,6 @@ Keroppi,1,imagens/cartas/Keroppi.png
 Tuxedosam,1,imagens/cartas/Tuxedosam.png
 DearDaniel,1,imagens/cartas/Dear Daniel.png
 Gudetama,0,imagens/cartas/Gudetama.png
-Little Twin Stars(Kiki&Lala),0,imagens/cartas/Little Twin Stars.png
+Kiki&Lala,0,imagens/cartas/Little Twin Stars.png
 Hangyodon,0,imagens/cartas/Hangyodon.png
 Aggrestuko,0,imagens/cartas/Aggrestuko.png

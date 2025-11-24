@@ -10,6 +10,10 @@
 
 #define MAX_CARTAS 100
 #define MAX_COL 200
+#define MAX_INPUT 50
+
+char texto[MAX_INPUT + 1] = "";
+int cursor = 0;
 
 // Cartas
 typedef enum {
@@ -17,12 +21,13 @@ typedef enum {
     INCOMUM,
     RARA,
     EPICA,
-    LENDARIA
+    LENDARIA,
+    ESPECIAL
 } Raridade;
 
-const char *nome_raridade[] = {"Comum", "Incomum", "Rara", "Épica", "Lendária"};
+const char *nome_raridade[] = {"Comum", "Incomum", "Rara", "Épica", "Lendária", "Especial"};
 const int valor_raridade[] = {50, 75, 100, 150, 200};
-
+int Ox = height/4;
 
 typedef struct {
     char nome[50];
@@ -117,9 +122,7 @@ int main(void)
 
     const int screenHeight = height;
     const int screenWidth = Width;
-    int counter = 0;
-    int size = 20;
-    Color color = RED;
+    int counter = 0; 
     Tela tela = INICIO;
     InitWindow(screenHeight, screenWidth, "Jogo legal");
     Font PixelSans = LoadFont("imagens/fontes/static/PixelifySans-Bold.ttf");
@@ -146,7 +149,6 @@ int main(void)
         
             ClearBackground(WHITE);
             DrawTexture(background, 0, 0, WHITE);
-            Vector2 position = {20,20};
             if(tela == INICIO)
             {
                  if(colisao(mousePos,height*0.27, Width*0.70,508, 166))
@@ -158,7 +160,7 @@ int main(void)
                    
                     }
             
-                Desenha("imagens/jogar.png",height*0.27,Width*0.70,508,166);   
+                Desenha("imagens/Jogar.png",height*0.27,Width*0.70,508,166);   
             
                 DrawTexture(Tkitty,Width*0.70, height*0.01,WHITE);
 
@@ -251,29 +253,71 @@ int main(void)
             {
                 int tW = 184;
                 int tH = 91;
+                
                 Rectangle rec = {height*0.1, Width*0.05, 1000, 550};
+                
+                DrawRectangleRec(rec, RED);
+                DrawRectangleLinesEx(rec, 10, BLACK);
                 if(colisao(mousePos,height*0.60, Width*0.5,tW, tH))
-                {
+                {    
                         tela = MENU;
                    
                 }
+                if(colisao(mousePos,height*0.30,Width*0.75,249, 69) && tela == INVENTARIO)
+                {    
+                    tela = VENDAS;
+                }
+                if(colisao(mousePos,150, Width/2, 30, 30) || IsKeyPressed(KEY_LEFT))
+                    {
+                        Ox = Ox-50;
+                    };
+                if(colisao(mousePos,1050, Width/2, 30, 30)|| IsKeyPressed(KEY_RIGHT))
+                    {
+                        Ox = Ox+50;
+                    };
                  // DrawTextEx(PixelSans, TextFormat("Carta: %s", col->qntd), (Vector2){60, 20}, 20, 1, RED);
                 for(int i = 0 ; i<qtd_col; i++)
                 {
-                    int colunas = 5;
-                    int space = 200;
-
-                    int coluna = i%colunas;
-                    int linha = i/colunas;
-
-                    int x = 20 + coluna*space;
-                    int y = 20 + linha*space;
-
+                    int x = Ox + (i*250);
+                    int y = Width*0.2;
+                    Rectangle nRec = {150, Width/2, 30, 30};
+                    DrawRectangleRec(nRec, BLACK);
+                    Rectangle dRec = {1050, Width/2, 30, 30};
+                    DrawRectangleRec(dRec, BLACK);
+                    if(x<20+200)continue;
+                    if(x>1000-200)continue;
                     DrawTextEx(PixelSans, TextFormat("Carta: %s", col[i].nome), (Vector2){x, y}, 20, 1, RED);
-                    Desenha(col[i].imagem, x, y, 80, 103);
+                    Desenha(col[i].imagem, x, y, 200, 241);
                     DrawTextEx(PixelSans, TextFormat("%d", col[i].qntd), (Vector2){x, y+25}, 20, 1, RED);
                 }
-                Desenha("imagens/Voltar.png",height*0.60,Width*0.5,tW, tH);
+                Desenha("imagens/Voltar.png",height*0.60,Width*0.70,tW, tH);
+                Desenha("imagens/Vender Carta.png",height*0.30,Width*0.75,249, 69);
+
+            }else if(tela==VENDAS)
+            {
+                    int key = GetCharPressed();
+                    if (key >= 32 && key <= 125)    // caracteres visíveis
+                    {
+                        if (cursor < MAX_INPUT)
+                        {
+                            texto[cursor] = (char)key;
+                            cursor++;
+                            texto[cursor] = '\0';
+                        }
+                    }
+                    if (IsKeyPressed(KEY_BACKSPACE) && cursor > 0)
+                    {
+                            cursor--;
+                            texto[cursor] = '\0';
+                    }
+                    
+                    Rectangle Rvenda = {height*0.1, Width*0.05, 1000, 550};
+                    DrawRectangleRec(Rvenda, DARKBLUE);
+                    DrawRectangleLinesEx(Rvenda, 10, BLACK);
+                    DrawTextOutline(PixelSans, "Qual carta voce\n deseja vender?", (Vector2){height*0.29,Width*0.1},70, 1,BLACK, WHITE);
+                    DrawRectangle(1000/2, 550/2, 300, 40, GRAY);
+                    DrawText(texto, 1000/2, 550/2, 30, BLACK);
+
 
             }
             
