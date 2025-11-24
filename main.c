@@ -260,8 +260,8 @@ int main(void)
                  // DrawTextEx(PixelSans, TextFormat("Carta: %s", col->qntd), (Vector2){60, 20}, 20, 1, RED);
                 for(int i = 0 ; i<qtd_col; i++)
                 {
-                    int colunas = 10;
-                    int space = 170;
+                    int colunas = 3;
+                    int space = 200;
 
                     int coluna = i%colunas;
                     int linha = i/colunas;
@@ -270,7 +270,7 @@ int main(void)
                     int y = 20 + linha*space;
 
                     DrawTextEx(PixelSans, TextFormat("Carta: %s", col[i].nome), (Vector2){x, y}, 20, 1, RED);
-                    DrawTextEx(PixelSans, TextFormat("%d", col[i].qntd), (Vector2){x, y}, 20, 1, RED);
+                    DrawTextEx(PixelSans, TextFormat("%d", col[i].qntd), (Vector2){x, y+25}, 20, 1, RED);
                 }
                 Desenha("imagens/Voltar.png",height*0.60,Width*0.5,tW, tH);
 
