@@ -1,15 +1,15 @@
-Hello Kitty, 4
-My Melody, 3
-Kuromi, 3
-Cinnamoroll, 3
-Pompompurin, 2
-Pochacco, 2
-Chococat, 2
-Badtz-Maru, 2
-Keroppi, 1
-Tuxedosam, 1
-Dear Daniel, 1
-Gudetama, 0
-Little Twin Stars (Kiki & Lala), 0
-Hangyodon, 0
-Aggrestuko, 0
+Hello Kitty,4,imagens/cartas/Hello Kitty.png
+My Melody,3,imagens/cartas/My Melody.png
+Kuromi,3,imagens/cartas/Kuromi.png
+Cinnamoroll,3,imagens/cartas/Cinnamoroll.png
+Pompompurin,2,imagens/cartas/Pompompurin.png
+Pochacco,2,imagens/cartas/Pochacco.png
+Chococat,2,imagens/cartas/Chococat.png
+Badtz-Maru,2,imagens/cartas/Badtz-Maru.png
+Keroppi,1,imagens/cartas/Keroppi.png
+Tuxedosam,1,imagens/cartas/Tuxedosam.png
+DearDaniel,1,imagens/cartas/Dear Daniel.png
+Gudetama,0,imagens/cartas/Gudetama.png
+Little Twin Stars(Kiki&Lala),0,imagens/cartas/Little Twin Stars.png
+Hangyodon,0,imagens/cartas/Hangyodon.png
+Aggrestuko,0,imagens/cartas/Aggrestuko.png

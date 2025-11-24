@@ -23,14 +23,18 @@ typedef enum {
 const char *nome_raridade[] = {"Comum", "Incomum", "Rara", "Épica", "Lendária"};
 const int valor_raridade[] = {50, 75, 100, 150, 200};
 
-char *nome_carta;
+
 typedef struct {
     char nome[50];
     Raridade raridade;
+    char imagem[50];
     int qntd;
     int fav;
 } Carta;
 
+char *nome_carta;
+char *imagem_carta;
+Raridade raridade_carta;
 // Cartas disponíveis no jogo
 Carta catalogo[MAX_CARTAS];
 int qtd_catalogo = 0;
@@ -57,48 +61,23 @@ typedef enum{
 void carregarCartas(const char *arquivo) {
     FILE *f = fopen(arquivo, "r");
     if (!f) {
-        DrawText("Erro: não foi possível abrir1 \n",20, 20, 70, RED);
+        printf("Não foi possível abrir o arquivo de cartas.\n");
         exit(1);
     }
-
-    char linha[256];
     char nome[50];
     int raridade;
-
-    while (fgets(linha, sizeof(linha), f)) {
-
-        // Remove o '\n' se existir
-        linha[strcspn(linha, "\n")] = 0;
-
-        // Tenta ler no formato: NOME, NUMERO
-        if (sscanf(linha, " %49[^,], %d", nome, &raridade) != 2) {
-            DrawText("Erro: não foi possível abrir2 \n",20, 20, 70, RED);
-            continue;
-        }
-
-        // Valida raridade
-        if (raridade < 0 || raridade > 4) {
-             DrawText("Erro: não foi possível abrir3 \n",20, 20, 70, RED);
-            continue;
-        }
-
-        // Evita estourar o catálogo
-        if (qtd_catalogo >= MAX_CARTAS) {
-             DrawText("Erro: não foi possível abrir 4\n",20, 20, 70, RED);
-            break;
-        }
-
-        // Copia os dados para o catálogo
+    char imagem[50];
+    while (fscanf(f," %49[^,],%d,%49[^\r\n]", nome, &raridade, imagem) == 3) {
         strcpy(catalogo[qtd_catalogo].nome, nome);
         catalogo[qtd_catalogo].raridade = raridade;
+        strcpy(catalogo[qtd_catalogo].imagem, imagem);
         catalogo[qtd_catalogo].qntd = 0;
         catalogo[qtd_catalogo].fav = 0;
-
         qtd_catalogo++;
     }
-
     fclose(f);
 }
+// Função auxiliar para verificar se a carta já existe na coleção.
 void encontrarCarta (int idx){
     int encontrar = 0;
     for (int i = 0; i < qtd_col; i++) {
@@ -116,15 +95,19 @@ void encontrarCarta (int idx){
 }
 
 void girarCarta (){
-   
-    int random = rand() % qtd_catalogo;
-    encontrarCarta(random);
-    //printf("\nVocê girou:\n");
+   if (giros <= 0) {
+        giros = giros;
+    }else{
+        giros--;
+        int random = rand() % qtd_catalogo;
+        encontrarCarta(random);
 
-    nome_carta = catalogo[random].nome;
+        nome_carta = catalogo[random].nome;
+        imagem_carta = catalogo[random].imagem;
+        raridade_carta = catalogo[random].raridade;
+    }
     
-    //printf("[%s]\n", nome_raridade[catalogo[random].raridade]);
-    //printf("%s foi adicionado a sua coleção.\n", catalogo[random].nome);
+    
 }
 
 int main(void)
@@ -145,7 +128,8 @@ int main(void)
     Image kitty = LoadImage("imagens/Hello Kitty.png");
     ImageResize(&kitty, 300, 376);
     Texture Tkitty = LoadTextureFromImage(kitty);
-    Texture2D background = LoadTexture("imagens/BGH.png");\
+    Texture2D background = LoadTexture("imagens/BGH.png");
+    UnloadImage(kitty);
 
   
     
@@ -173,7 +157,6 @@ int main(void)
                         }
                    
                     }
-                DrawTextEx(PixelSans, "CARLOS LINDO", position, 50, 1 , BLACK);
             
                 Desenha("imagens/jogar.png",height*0.27,Width*0.70,508,166);   
             
@@ -188,7 +171,7 @@ int main(void)
                 //Vector2 position = {height*0.3,Width*0.15};
 
                 counter =  0;
-                if(colisao(mousePos,height*0.20, Width*0.4,tW, tH))
+                if(colisao(mousePos,height*0.20, Width*0.4,tW, tH)  && giros>0)
                     {
                         tela = GIROS;
                    
@@ -208,13 +191,12 @@ int main(void)
                         tela = INICIO;
                    
                     }
-                DrawText("TELA DE MENU",20,20,size,color);
                 
                 DrawRectangleRec(rec, RED);
                 DrawRectangleLinesEx(rec, 10, BLACK);
                 Desenha("imagens/Menu Principal.png",height*0.35,Width*0.2, 300, 50);
-                //DrawTextEx(PixelSans, "MENU PRINCIPAL", position, 70, 1 , WHITE);
-                //Desenha("imagens/Frame menu.png",20,20,tW, tH);
+                DrawTextOutline(PixelSans,TextFormat("Giros restantes: %d", giros) , (Vector2){height*0.15,Width*0.30},40, 1, BLACK, WHITE);
+                DrawTextOutline(PixelSans,TextFormat("|| Dinheiro restantes: %d", dinheiro) , (Vector2){height*0.45,Width*0.30},40, 1, BLACK, WHITE);
                 Desenha("imagens/Girar Carta-menu.png",height*0.20,Width*0.4,tW, tH);
                 Desenha("imagens/Vizualizar Colecao.png",height*0.20,Width*0.6,tW, tH);
                 Desenha("imagens/Missoes.png",height*0.50,Width*0.4,tW, tH);
@@ -222,9 +204,10 @@ int main(void)
         
             }else if(tela == GIROS)
             {
-                int tW = 300;
-                int tH = 82;
-             if(colisao(mousePos,height*0.5, Width*0.6,tW, tH))
+                int tW = 184;
+                int tH = 91;
+                Rectangle rec = {height*0.1, Width*0.05, 1000, 550};
+             if(colisao(mousePos,height*0.60, Width*0.5,tW, tH))
                 {
                         tela = MENU;
                    
@@ -234,9 +217,63 @@ int main(void)
                  girarCarta();
                  counter=1;
               }
-              DrawText(nome_carta, 30, 30, 70, RED);
-              //DrawText("SE VOCE ESTA LENDO ISSO QUER DIZER QUE O CODIGO FUNCIONA", 40, 40, 90, RED);
-              Desenha("imagens/Sair.png",height*0.50,Width*0.6,tW, tH); 
+                DrawRectangleRec(rec, RED);
+                DrawRectangleLinesEx(rec, 10, BLACK);
+                DrawTextOutline(PixelSans, "VOCE GIROU:", (Vector2){height*0.60,Width*0.2},50, 1, BLACK,WHITE);
+                DrawTextOutline(PixelSans, nome_carta, (Vector2){height*0.50,Width*0.25},100, 1, BLACK, WHITE);
+
+              if(imagem_carta)
+              {
+                Desenha("imagens/Voltar.png",height*0.60,Width*0.5,tW, tH);
+                Desenha(imagem_carta,height*0.15,Width*0.15,337, 420);
+
+                if(raridade_carta == LENDARIA)
+                {
+                    DrawTextOutline(PixelSans, "< LENDARIA!! >", (Vector2){height*0.54,Width*0.4},55, 1, BLACK, VIOLET );
+                }else if(raridade_carta == EPICA)
+                {
+                    DrawTextOutline(PixelSans, "< EPICA!! >", (Vector2){height*0.57,Width*0.4},55, 1,BLACK, DARKBLUE);
+                }else if (raridade_carta == RARA)
+                {
+                    DrawTextOutline(PixelSans, "< RARA!! >", (Vector2){height*0.59,Width*0.4},55, 1,BLACK, GREEN);
+                }else if(raridade_carta == INCOMUM)
+                {
+                    DrawTextOutline(PixelSans, "< INCOMUM!! >", (Vector2){height*0.55,Width*0.4},55, 1,BLACK, YELLOW);
+                }else if(raridade_carta == COMUM)
+                {
+                    DrawTextOutline(PixelSans, "< COMUM!! >", (Vector2){height*0.57,Width*0.4},55, 1,BLACK, ORANGE);
+                }
+                
+              }
+            
+              
+            }else if(tela == INVENTARIO)
+            {
+                int tW = 184;
+                int tH = 91;
+                Rectangle rec = {height*0.1, Width*0.05, 1000, 550};
+                if(colisao(mousePos,height*0.60, Width*0.5,tW, tH))
+                {
+                        tela = MENU;
+                   
+                }
+                 // DrawTextEx(PixelSans, TextFormat("Carta: %s", col->qntd), (Vector2){60, 20}, 20, 1, RED);
+                for(int i = 0 ; i<qtd_col; i++)
+                {
+                    int colunas = 10;
+                    int space = 170;
+
+                    int coluna = i%colunas;
+                    int linha = i/colunas;
+
+                    int x = 20 + coluna*space;
+                    int y = 20 + linha*space;
+
+                    DrawTextEx(PixelSans, TextFormat("Carta: %s", col[i].nome), (Vector2){x, y}, 20, 1, RED);
+                    DrawTextEx(PixelSans, TextFormat("%d", col[i].qntd), (Vector2){x, y}, 20, 1, RED);
+                }
+                Desenha("imagens/Voltar.png",height*0.60,Width*0.5,tW, tH);
+
             }
             
             

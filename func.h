@@ -19,17 +19,22 @@ void Desenha(const char *imagePath,int Width, int height, int tamW, int tamH)
     Image image = LoadImage(imagePath);
     ImageResize(&image, tamW, tamH);
     Texture texture = LoadTextureFromImage(image);
-
     DrawTexture(texture, Width, height, WHITE);
-    
-    
+    UnloadImage(image);
     
   
 }
-void DrawOutlinedText(const char *text, int posX, int posY, int fontSize, Color color, int outlineSize, Color outlineColor) {
-    DrawText(text, posX - outlineSize, posY - outlineSize, fontSize, outlineColor);
-    DrawText(text, posX + outlineSize, posY - outlineSize, fontSize, outlineColor);
-    DrawText(text, posX - outlineSize, posY + outlineSize, fontSize, outlineColor);
-    DrawText(text, posX + outlineSize, posY + outlineSize, fontSize, outlineColor);
-    
+
+void DrawTextOutline(Font font, const char *text, Vector2 position, float fontSize, float spacing, Color outlineColor, Color fillColor)
+{
+
+    float offset = 2.0f; 
+
+    DrawTextEx(font, text, (Vector2){position.x - offset, position.y}, fontSize, spacing, outlineColor); // Esquerda
+    DrawTextEx(font, text, (Vector2){position.x + offset, position.y}, fontSize, spacing, outlineColor); // Direita
+    DrawTextEx(font, text, (Vector2){position.x, position.y - offset}, fontSize, spacing, outlineColor); // Cima
+    DrawTextEx(font, text, (Vector2){position.x, position.y + offset}, fontSize, spacing, outlineColor); // Baixo
+
+   
+    DrawTextEx(font, text, position, fontSize, spacing, fillColor);
 }
