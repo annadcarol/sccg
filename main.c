@@ -258,7 +258,7 @@ int main(void)
                 
                 DrawRectangleRec(rec, RED);
                 DrawRectangleLinesEx(rec, 10, BLACK);
-                if(colisao(mousePos,height*0.60, Width*0.5,tW, tH))
+                if(colisao(mousePos,height*0.60, Width*0.7,tW, tH))
                 {    
                         tela = MENU;
                    
@@ -296,7 +296,16 @@ int main(void)
             }else if(tela==VENDAS)
             {
                     int key = GetCharPressed();
-                    if (key >= 32 && key <= 125)    // caracteres visíveis
+                    int tW = 184;
+                    int tH = 91;
+                
+
+                    if(colisao(mousePos,height*0.60, Width*0.7,tW, tH))
+                    {    
+                        tela = INVENTARIO;
+                   
+                    }
+                    if (key >= 32 && key <= 125)    
                     {
                         if (cursor < MAX_INPUT)
                         {
@@ -310,13 +319,35 @@ int main(void)
                             cursor--;
                             texto[cursor] = '\0';
                     }
+                    if(IsKeyPressed(KEY_ENTER))
+                    {
+                       for(int i = 0; i<qtd_col; i++)
+                       {
+                            if(strcmp(texto,col[i].nome)==0){
+
+                                 int valor = valor_raridade[col[i].raridade];
+                                 dinheiro += valor;
+                                 col[i].qntd -= 1;
+                                 
+
+                                 if(col[i].qntd == 0){
+                                    for(int j = i; j<qtd_col - 1; j++){
+                                        col[j] = col[j+1];
+                                    }
+                                    qtd_col--;
+                                    tela = INVENTARIO;
+                                 }
+                            }
+                       }
+                    }
                     
                     Rectangle Rvenda = {height*0.1, Width*0.05, 1000, 550};
                     DrawRectangleRec(Rvenda, DARKBLUE);
                     DrawRectangleLinesEx(Rvenda, 10, BLACK);
                     DrawTextOutline(PixelSans, "Qual carta voce\n deseja vender?", (Vector2){height*0.29,Width*0.1},70, 1,BLACK, WHITE);
-                    DrawRectangle(1000/2, 550/2, 300, 40, GRAY);
-                    DrawText(texto, 1000/2, 550/2, 30, BLACK);
+                    DrawRectangle(350, 300, 500, 60, GRAY);
+                    DrawText(texto, 350, 300, 50, BLACK);
+                    Desenha("imagens/Voltar.png",height*0.60,Width*0.70,tW, tH);
 
 
             }
