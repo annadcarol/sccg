@@ -57,7 +57,6 @@ typedef enum{
     INICIO,
     MENU,
     INVENTARIO,
-    MISSOES,
     VENDAS,
     GIROS
 }Tela;
@@ -178,17 +177,13 @@ int main(void)
                         tela = GIROS;
                    
                     }
-                if(colisao(mousePos,height*0.20, Width*0.6,tW, tH))
+                if(colisao(mousePos,height*0.50,Width*0.4,tW, tH))
                     {
                         tela = INVENTARIO;
                    
                     }
-                if(colisao(mousePos,height*0.5, Width*0.4,tW, tH))
-                    {
-                        tela = MISSOES;
-                   
-                    }
-                if(colisao(mousePos,height*0.5, Width*0.6,tW, tH))
+               
+                if(colisao(mousePos,height*0.35,Width*0.6,tW, tH))
                     {
                         tela = INICIO;
                    
@@ -198,11 +193,10 @@ int main(void)
                 DrawRectangleLinesEx(rec, 10, BLACK);
                 Desenha("imagens/Menu Principal.png",height*0.35,Width*0.2, 300, 50);
                 DrawTextOutline(PixelSans,TextFormat("Giros restantes: %d", giros) , (Vector2){height*0.15,Width*0.30},40, 1, BLACK, WHITE);
-                DrawTextOutline(PixelSans,TextFormat("|| Dinheiro restantes: %d", dinheiro) , (Vector2){height*0.45,Width*0.30},40, 1, BLACK, WHITE);
+                DrawTextOutline(PixelSans,TextFormat("|| Dinheiro:  %d R$", dinheiro) , (Vector2){height*0.45,Width*0.30},40, 1, BLACK, WHITE);
                 Desenha("imagens/Girar Carta-menu.png",height*0.20,Width*0.4,tW, tH);
-                Desenha("imagens/Vizualizar Colecao.png",height*0.20,Width*0.6,tW, tH);
-                Desenha("imagens/Missoes.png",height*0.50,Width*0.4,tW, tH);
-                Desenha("imagens/Sair.png",height*0.50,Width*0.6,tW, tH); 
+                Desenha("imagens/Vizualizar Colecao.png",height*0.50,Width*0.4,tW, tH);
+                Desenha("imagens/Sair.png",height*0.35,Width*0.6,tW, tH); 
         
             }else if(tela == GIROS)
             {
@@ -286,9 +280,9 @@ int main(void)
                     DrawRectangleRec(dRec, BLACK);
                     if(x<20+200)continue;
                     if(x>1000-200)continue;
-                    DrawTextEx(PixelSans, TextFormat("Carta: %s", col[i].nome), (Vector2){x, y}, 20, 1, RED);
+
                     Desenha(col[i].imagem, x, y, 200, 241);
-                    DrawTextEx(PixelSans, TextFormat("%d", col[i].qntd), (Vector2){x, y+25}, 20, 1, RED);
+                    DrawTextEx(PixelSans, TextFormat("%dX", col[i].qntd), (Vector2){x+170, y+210}, 30, 1, BLACK);
                 }
                 Desenha("imagens/Voltar.png",height*0.60,Width*0.70,tW, tH);
                 Desenha("imagens/Vender Carta.png",height*0.30,Width*0.75,249, 69);
